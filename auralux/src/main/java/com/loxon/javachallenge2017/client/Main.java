@@ -18,7 +18,7 @@ public class Main {
         ClientEndpointConfig.Configurator configurator = new ClientEndpointConfig.Configurator() {
             @Override
             public void beforeRequest(Map<String, List<String>> headers) {
-                headers.put("Authorization", Arrays.asList("Basic " + DatatypeConverter.printBase64Binary("userid:password".getBytes())));
+                headers.put("Authorization", Arrays.asList("Basic " + DatatypeConverter.printBase64Binary("preall:UU2aevJOWAHv".getBytes())));
             }
         };
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().configurator(configurator).build();
