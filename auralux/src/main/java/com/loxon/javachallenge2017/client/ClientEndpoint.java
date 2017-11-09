@@ -1,4 +1,4 @@
-
+package com.loxon.javachallenge2017.client;
 
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;

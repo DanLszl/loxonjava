@@ -1,4 +1,4 @@
-
+package com.loxon.javachallenge2017.client;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,7 +18,7 @@ public class Main {
         ClientEndpointConfig.Configurator configurator = new ClientEndpointConfig.Configurator() {
             @Override
             public void beforeRequest(Map<String, List<String>> headers) {
-                headers.put("Authorization", Arrays.asList("Basic " + DatatypeConverter.printBase64Binary("preall:UU2aevJOWAHv".getBytes())));
+                headers.put("Authorization", Arrays.asList("Basic " + DatatypeConverter.printBase64Binary("userid:password".getBytes())));
             }
         };
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().configurator(configurator).build();
