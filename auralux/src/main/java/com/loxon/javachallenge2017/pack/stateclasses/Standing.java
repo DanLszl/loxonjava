@@ -1,5 +1,5 @@
 
-package com.loxon.javachallenge2017.client.pack.stateclasses;
+package com.loxon.javachallenge2017.pack.stateclasses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
