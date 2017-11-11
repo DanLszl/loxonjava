@@ -27,7 +27,7 @@ class PlanetsBackground : Renderable {
     }
 }
 
-class RenderablePlanet(x: Int, y: Int, radius: Int) : Renderable {
+class RenderablePlanet(x: Int, y: Int, radius: Int, val id: Int) : Renderable {
 
     val x: Double
     val y: Double
@@ -60,6 +60,9 @@ class RenderablePlanet(x: Int, y: Int, radius: Int) : Renderable {
 
                 textAlign = TextAlignment.CENTER
                 fillText(o, x, y - 50.0 * GameVis.multiplier)
+
+                fill = Color.BLACK
+                fillText(this@RenderablePlanet.id.toString(), x, y + 60.0 * GameVis.multiplier)
             }
         }
     }

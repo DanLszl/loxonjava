@@ -38,7 +38,7 @@ object GameStateListener : GameChangeListener {
 
                 for (planet in gameDescription.planets) {
                     val renderPlanet = RenderablePlanet(
-                            planet.x, planet.y, planet.radius
+                            planet.x, planet.y, planet.radius, planet.planetID
                     )
 
 //                    println("Adding planet: ${gson.toJson(this)}")
