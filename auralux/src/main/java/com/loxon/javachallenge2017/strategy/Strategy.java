@@ -4,6 +4,8 @@ import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
 import com.loxon.javachallenge2017.pack.responses.Response;
 import com.loxon.javachallenge2017.pack.stateclasses.GameState;
 
+import java.util.List;
+
 public abstract class Strategy {
     protected GameDescription gameDescription;
 
@@ -11,5 +13,5 @@ public abstract class Strategy {
         this.gameDescription = gameDescription;
     }
 
-    public abstract Response getResponse(GameState gameState);
+    public abstract List<Response> getResponse(GameState gameState);
 }

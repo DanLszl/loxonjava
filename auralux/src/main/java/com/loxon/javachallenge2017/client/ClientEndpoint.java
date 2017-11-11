@@ -11,6 +11,7 @@ import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
+import java.util.List;
 
 public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<String> {
 	private Session session;
@@ -36,10 +37,12 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 			firstMessage = !firstMessage;
 		} else {
 			GameState gameState = gson.fromJson(message, GameState.class);
-			Response response = strategy.getResponse(gameState);
-			String answer = gson.toJson(response);
-			System.err.println(answer);
-			sendMessage(answer);
+			List<Response> responses = strategy.getResponse(gameState);
+			for (Response response : responses) {
+				String answer = gson.toJson(response);
+				System.err.println(answer);
+				sendMessage(answer);
+			}
 		}
 	}
 

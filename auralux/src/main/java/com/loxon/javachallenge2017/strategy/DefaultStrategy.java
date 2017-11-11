@@ -9,9 +9,7 @@ import com.loxon.javachallenge2017.pack.stateclasses.GameState;
 import com.loxon.javachallenge2017.pack.stateclasses.PlanetState;
 import com.loxon.javachallenge2017.pack.stateclasses.StationedArmy;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class DefaultStrategy extends Strategy {
 
@@ -20,7 +18,7 @@ public class DefaultStrategy extends Strategy {
     }
 
     @Override
-    public Response getResponse(GameState gameState) {
+    public List<Response> getResponse(GameState gameState) {
         Feature feature = new DefaultFeature(gameDescription, gameState);
 
         Map<Planet, Double> values = feature.calculate();
@@ -55,6 +53,6 @@ public class DefaultStrategy extends Strategy {
 
 
         Response response = new Response(armysPlanet.getPlanetID(), oneOfTheBiggest.getPlanetID(), ourArmy.getSize());
-        return response;
+        return Arrays.asList(response);
     }
 }
