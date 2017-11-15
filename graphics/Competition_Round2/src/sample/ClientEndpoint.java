@@ -3,6 +3,7 @@ package sample;
 import sample.game.GameChangeListener;
 import sample.game.GameStateListener;
 
+
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
@@ -27,6 +28,9 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
     public void onOpen(Session session, EndpointConfig config) {
         session.addMessageHandler(this);
         this.session = session;
+
+        // Text
+
     }
 
     @Override

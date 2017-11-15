@@ -8,6 +8,8 @@ import sample.backgame.renderable.RenderableMovingUnits
 import sample.backgame.renderable.RenderablePlanet
 import sample.backgame.renderable.StationaryUnits
 import sample.pack.descriptionclasses.GameDescription
+
+import sample.pack.magicnumber.MagicData
 import sample.pack.stateclasses.GameState
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -21,6 +23,8 @@ object GameStateListener : GameChangeListener {
 
     // Adding is only ok from here
     val players: MutableList<String> = ArrayList()
+
+    var magic: MagicData? = null
 
     private val handlingMessage = AtomicBoolean(false)
 
@@ -55,7 +59,7 @@ object GameStateListener : GameChangeListener {
 
                         GameObjects.connections.add(
                                 RenderableConnection(
-                                        planet.x , planet.y,
+                                        planet.x, planet.y,
                                         (other.x / GameVis.multiplier).toInt(),
                                         (other.y / GameVis.multiplier).toInt()
                                 )
@@ -83,7 +87,20 @@ object GameStateListener : GameChangeListener {
                     planets[planetState.planetID]!!.apply {
                         owner = planetState.owner
                         ownerShipRatio = planetState.ownershipRatio
-                        magicNumber = planetState.magicNumber
+
+                        // magicNumber = planetState.magicNumber
+                        val m = magic
+                        if (m != null) {
+                            val list = m.magicValues
+
+                            val mag = list.find { it.planetIndex == id }
+
+                            if(mag == null) {
+                                throw RuntimeException("Error with id: ${list.joinToString()}} and $id")
+                            }
+
+                            magicNumber = mag.magicness
+                        }
                     }
 
                     for (movingArmy in planetState.movingArmies) {
@@ -119,6 +136,23 @@ object GameStateListener : GameChangeListener {
         }
     }
 
+    private fun trySetMagic(message: String): Boolean {
+        try {
+            val magicData: MagicData? = gson.fromJson(message, MagicData::class.java)
+
+            // Parse failed technically
+            if (magicData == null || magicData.magicValues.size == 0)
+                return false
+
+            magic = magicData
+            return true
+        } catch (e: Exception) {
+            // That's gonna happen a lot
+        }
+
+        return false
+    }
+
     override fun onMessage(message: String) {
 //        println("onMessage !!!")
 
@@ -130,7 +164,8 @@ object GameStateListener : GameChangeListener {
 
             proceeded = true
 
-            updateGame(message)
+            if (!trySetMagic(message))
+                updateGame(message)
 
 //            println("Thread id request: " + Thread.currentThread().id)
 

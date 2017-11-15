@@ -20,10 +20,14 @@ object GameObjects : Renderable {
     }
 
     override fun render(graphicsContext: GraphicsContext, renderState: RenderState) {
-        backgrounds.forEach { it.render(graphicsContext, renderState) }
-        connections.forEach { it.render(graphicsContext, renderState) }
-        planets.forEach { it.render(graphicsContext, renderState) }
-        units.forEach { it.render(graphicsContext, renderState) }
+        try {
+            backgrounds.forEach { it.render(graphicsContext, renderState) }
+            connections.forEach { it.render(graphicsContext, renderState) }
+            planets.forEach { it.render(graphicsContext, renderState) }
+            units.forEach { it.render(graphicsContext, renderState) }
+        } catch (e: Exception) {
+            e.printStackTrace();
+        }
     }
 
 

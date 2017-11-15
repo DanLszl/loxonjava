@@ -4,6 +4,6 @@ import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
 
 public class StrategyFactory {
     public static Strategy getStrategy(GameDescription gameDescription) {
-        return new OccupyClosestEmptyOrClosestWithFullForces(gameDescription);
+        return new UltimateStrategy(gameDescription);
     }
 }

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class EnemyAttackConcentration extends Feature {
 
     // TODO Being able to modify this
-    private double discountFactor;
+    private double discountFactor = 1.1;
 
     public EnemyAttackConcentration(GameDescription gameDescription, GameState gameState) {
         super(gameDescription, gameState);

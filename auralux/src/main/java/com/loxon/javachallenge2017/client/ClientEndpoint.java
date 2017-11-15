@@ -5,6 +5,7 @@ import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
 import com.loxon.javachallenge2017.pack.descriptionclasses.Planet;
 import com.loxon.javachallenge2017.pack.responses.Response;
 import com.loxon.javachallenge2017.pack.stateclasses.GameState;
+import com.loxon.javachallenge2017.pack.stateclasses.Standing;
 import com.loxon.javachallenge2017.strategy.HardCodedGraph;
 import com.loxon.javachallenge2017.strategy.Strategy;
 import com.loxon.javachallenge2017.strategy.StrategyFactory;
@@ -49,6 +50,13 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 				System.err.println(answer);
 				sendMessage(answer);
 			}
+			System.out.println(message);
+			if (gameState.getGameStatus().equals("ENDED")) {
+				for (Standing standing: gameState.getStandings()) {
+					System.err.printf(standing.toString());
+				}
+			}
+
 		}
 	}
 

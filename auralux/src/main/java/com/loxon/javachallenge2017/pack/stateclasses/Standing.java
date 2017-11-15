@@ -40,4 +40,12 @@ public class Standing {
         this.userID = userID;
     }
 
+    @Override
+    public String toString() {
+        return "Standing{" +
+                "score=" + score +
+                ", strength=" + strength +
+                ", userID='" + userID + '\'' +
+                '}';
+    }
 }

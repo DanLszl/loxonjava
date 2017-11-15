@@ -16,7 +16,7 @@ interface Renderable {
 }
 
 val idleColor = Color.web("0xfecea8")
-val magicColor = Color.web("0xff847c")
+val magicColor = Color.YELLOW //Color.web("0xff847c")
 val connectionColor = Color.WHITESMOKE
 val planetColors: List<Color> = listOf(Color.web("0x99b898"), Color.web("0xe84a5f"), Color.DARKVIOLET, Color.BEIGE, Color.BISQUE)
 val backgroundColor = Color.web("0x2a3638")
