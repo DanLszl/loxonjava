@@ -7,6 +7,7 @@ import com.loxon.javachallenge2017.pack.stateclasses.MovingArmy;
 import com.loxon.javachallenge2017.pack.stateclasses.StationedArmy;
 import com.loxon.javachallenge2017.pack.utility.GameDescriptionInfo;
 import com.loxon.javachallenge2017.pack.utility.GameStateInfo;
+import com.loxon.javachallenge2017.pack.utility.Util;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,6 @@ public class PlanetArmiesStrength extends Feature {
                         )
                 );
 
-        return planetArmiesStrength;
+        return Util.normalizeValues(planetArmiesStrength);
     }
 }

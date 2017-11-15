@@ -4,6 +4,7 @@ import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
 import com.loxon.javachallenge2017.pack.stateclasses.GameState;
 import com.loxon.javachallenge2017.pack.utility.GameDescriptionInfo;
 import com.loxon.javachallenge2017.pack.utility.GameStateInfo;
+import com.loxon.javachallenge2017.pack.utility.Util;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,7 +35,7 @@ public class EnemyAttackConcentration extends Feature {
                         )
                 );
 
-        return attackConcentration;
+        return Util.normalizeValues(attackConcentration);
 
     }
 }

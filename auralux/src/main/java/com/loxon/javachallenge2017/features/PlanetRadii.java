@@ -3,6 +3,7 @@ package com.loxon.javachallenge2017.features;
 import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
 import com.loxon.javachallenge2017.pack.descriptionclasses.Planet;
 import com.loxon.javachallenge2017.pack.stateclasses.GameState;
+import com.loxon.javachallenge2017.pack.utility.Util;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,6 @@ public class PlanetRadii extends Feature {
                                 planet -> planet.getRadius().doubleValue()
                         )
                 );
-        return planetRadii;
+        return Util.normalizeValues(planetRadii);
     }
 }
