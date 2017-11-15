@@ -29,4 +29,8 @@ public class GameDescriptionInfo {
                 .findFirst()
                 .get();
     }
+
+    public static boolean isOurPlayer(String id) {
+        return getOurPlayer().getUserID().equals(id);
+    }
 }
