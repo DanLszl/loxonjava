@@ -63,7 +63,7 @@ public class GameStateInfo {
                 );
     }
 
-    public static Map<Integer, Double> getEnemyStationedArmies(GameState gameState, String playerId) {
+    public static Map<Integer, Double> getStationedArmiesOfEnemy(GameState gameState, String playerId) {
         Map<Integer, List<StationedArmy>> planetStationedArmiesMap = getStationedArmies(gameState);
         return planetStationedArmiesMap.entrySet().stream()
                 .collect(
@@ -165,6 +165,20 @@ public class GameStateInfo {
                                 entry -> entry.getKey(),
                                 entry ->
                                         entry.getValue() + ourDiscountedMovingArmies.get(entry.getKey())
+                        )
+                );
+    }
+
+    public static Map<Integer, Double> getArmiesStrengthOfEnemy(GameDescription gameDescription, GameState gameState, String playerId, Double discountFactor) {
+        Map<Integer, Double> enemyStationedArmy = getStationedArmiesOfEnemy(gameState, playerId);
+        Map<Integer, Double> enemyDiscountedMovingArmies = getDiscountedMovingArmiesOfEnemy(gameDescription, gameState, playerId, discountFactor);
+
+        return enemyStationedArmy.entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getKey(),
+                                entry ->
+                                        entry.getValue() + enemyDiscountedMovingArmies.get(entry.getKey())
                         )
                 );
     }
