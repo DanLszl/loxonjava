@@ -30,7 +30,7 @@ public class GameDescriptionInfo {
                 .get();
     }
 
-    public static boolean isOurPlayer(String id) {
-        return getOurPlayer().getUserID().equals(id);
+    public static boolean isOurPlayer(GameDescription gameDescription, String id) {
+        return getOurPlayer(gameDescription).getUserID().equals(id);
     }
 }

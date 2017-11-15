@@ -5,6 +5,7 @@ import com.loxon.javachallenge2017.pack.stateclasses.GameState;
 import com.loxon.javachallenge2017.pack.stateclasses.PlanetState;
 import com.loxon.javachallenge2017.pack.utility.GameDescriptionInfo;
 import com.loxon.javachallenge2017.pack.utility.GameStateInfo;
+import com.loxon.javachallenge2017.pack.utility.Util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +20,11 @@ public class Possession extends Feature {
     public Map<Integer, Double> calculate() {
         Map<Integer, Double> map = new HashMap<>();
         for(PlanetState planetState : gameState.getPlanetStates()) {
-            boolean areWeTheOwners = GameDescriptionInfo.isOurPlayer(planetState.getOwner());
+            boolean areWeTheOwners = GameDescriptionInfo.isOurPlayer(gameDescription, planetState.getOwner());
             double functionValue = getFunctionValue(areWeTheOwners, planetState.getOwnershipRatio());
             map.put(planetState.getPlanetID(), functionValue);
         }
-        return map;
+        return Util.normalizeValues(map);
     }
 
     private double getFunctionValue(boolean isOurPlayer, double possessionRatio) {
