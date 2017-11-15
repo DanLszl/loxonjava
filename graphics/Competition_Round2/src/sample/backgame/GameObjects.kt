@@ -13,18 +13,17 @@ object GameObjects : Renderable {
 
     // These will not be removed
     val planets: MutableList<Renderable> = Collections.synchronizedList(ArrayList())
+    val connections: MutableList<Renderable> = Collections.synchronizedList(ArrayList())
 
     init {
         backgrounds.add(PlanetsBackground())
     }
 
-    override fun render(graphicsContext: GraphicsContext) {
-//        println("GameObject rendering: ")
-//        println(planets)
-
-        backgrounds.forEach { it.render(graphicsContext) }
-        planets.forEach { it.render(graphicsContext) }
-        units.forEach { it.render(graphicsContext) }
+    override fun render(graphicsContext: GraphicsContext, renderState: RenderState) {
+        backgrounds.forEach { it.render(graphicsContext, renderState) }
+        connections.forEach { it.render(graphicsContext, renderState) }
+        planets.forEach { it.render(graphicsContext, renderState) }
+        units.forEach { it.render(graphicsContext, renderState) }
     }
 
 
