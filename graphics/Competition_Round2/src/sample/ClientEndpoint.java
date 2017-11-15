@@ -31,7 +31,7 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 
     @Override
     public void onMessage(String message) {
-//        System.out.println(message);
+        System.out.println(message);
 
         for (GameChangeListener gameChangeListener : listeners) {
             gameChangeListener.onMessage(message);

@@ -2,10 +2,14 @@
 package sample.pack.stateclasses;
 
 import java.util.List;
+import java.util.Random;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class PlanetState {
+
+    private static final Random random = new Random(System.currentTimeMillis());
 
     @SerializedName("owner")
     @Expose
@@ -22,6 +26,24 @@ public class PlanetState {
     @SerializedName("planetID")
     @Expose
     private Integer planetID;
+
+    //region Magic
+    @SerializedName("magicNumber")
+    @Expose
+    private Double magicNumber = random.nextDouble();
+
+    public static Random getRandom() {
+        return random;
+    }
+
+    public Double getMagicNumber() {
+        return magicNumber;
+    }
+    //endregion
+
+    public void setMagicNumber(Double magicNumber) {
+        this.magicNumber = magicNumber;
+    }
 
     public String getOwner() {
         return owner;

@@ -5,25 +5,29 @@ import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.input.KeyCode
 import javafx.stage.Stage
 import sample.ClientEndpoint
 import sample.backgame.GameObjects
+import sample.backgame.PlanetRenderState
+import sample.backgame.RenderState
+import sample.backgame.UnitRenderState
+import java.awt.event.KeyEvent
 
 class GameVis : Application() {
 
-    fun addObjects() {
-//        GameObjects.units.add(RenderablePlanet(240, 200, 45, Color.RED))
-//        GameObjects.units.add(RenderablePlanet(960, 700, 45, Color.GREEN))
-//        GameObjects.units.add(RenderablePlanet(120, 460, 40))
-//        GameObjects.units.add(RenderablePlanet(1080, 440, 40))
-//        GameObjects.units.add(RenderablePlanet(360, 420, 40))
-//        GameObjects.units.add(RenderablePlanet(840, 480, 40))
-//        GameObjects.units.add(RenderablePlanet(600, 260, 50))
-//        GameObjects.units.add(RenderablePlanet(600, 640, 50))
-//        GameObjects.units.add(RenderablePlanet(940, 120, 45))
-//        GameObjects.units.add(RenderablePlanet(260, 780, 45))
-    }
-
+//    fun addObjects() {
+////        GameObjects.units.add(RenderablePlanet(240, 200, 45, Color.RED))
+////        GameObjects.units.add(RenderablePlanet(960, 700, 45, Color.GREEN))
+////        GameObjects.units.add(RenderablePlanet(120, 460, 40))
+////        GameObjects.units.add(RenderablePlanet(1080, 440, 40))
+////        GameObjects.units.add(RenderablePlanet(360, 420, 40))
+////        GameObjects.units.add(RenderablePlanet(840, 480, 40))
+////        GameObjects.units.add(RenderablePlanet(600, 260, 50))
+////        GameObjects.units.add(RenderablePlanet(600, 640, 50))
+////        GameObjects.units.add(RenderablePlanet(940, 120, 45))
+////        GameObjects.units.add(RenderablePlanet(260, 780, 45))
+//    }
 
 
     @Throws(Exception::class)
@@ -31,10 +35,17 @@ class GameVis : Application() {
         val canvas = Canvas(width, height)
         graphicsContext = canvas.graphicsContext2D
 
-
         with(primaryStage) {
             title = "Starships"
-            scene = Scene(Group(canvas))
+            scene = Scene(Group(canvas)).apply {
+                setOnKeyPressed {
+                    when (it.code) {
+                        KeyCode.S -> renderState.nextUnit()
+                        KeyCode.P -> renderState.nextPlanet()
+                    }
+                }
+            }
+
             show()
         }
 
@@ -54,6 +65,12 @@ class GameVis : Application() {
         }
 
         var graphicsContext: GraphicsContext? = null
+
+        val renderState: RenderState = RenderState(
+                PlanetRenderState.VisibleAll,
+                UnitRenderState.Generic
+        )
+
 
     }
 }

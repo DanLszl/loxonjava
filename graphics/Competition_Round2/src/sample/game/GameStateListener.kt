@@ -3,6 +3,7 @@ package sample.game
 import com.google.gson.Gson
 import javafx.application.Platform
 import sample.backgame.GameObjects
+import sample.backgame.renderable.RenderableConnection
 import sample.backgame.renderable.RenderableMovingUnits
 import sample.backgame.renderable.RenderablePlanet
 import sample.backgame.renderable.StationaryUnits
@@ -38,13 +39,28 @@ object GameStateListener : GameChangeListener {
 
                 for (planet in gameDescription.planets) {
                     val renderPlanet = RenderablePlanet(
-                            planet.x, planet.y, planet.radius
+                            planet.x, planet.y, planet.radius, planet.planetID
                     )
 
 //                    println("Adding planet: ${gson.toJson(this)}")
 
                     planets.put(planet.planetID, renderPlanet)
                     GameObjects.planets.add(renderPlanet)
+                }
+
+                // After putting the connections inside
+                for (planet in gameDescription.planets) {
+                    for (neighbour in planet.neighbours) {
+                        val other: RenderablePlanet = planets[neighbour]!!
+
+                        GameObjects.connections.add(
+                                RenderableConnection(
+                                        planet.x , planet.y,
+                                        (other.x / GameVis.multiplier).toInt(),
+                                        (other.y / GameVis.multiplier).toInt()
+                                )
+                        )
+                    }
                 }
 
                 for (player in gameDescription.players) {
@@ -64,10 +80,10 @@ object GameStateListener : GameChangeListener {
 
                 // Set the owner
                 for (planetState in gameState.planetStates) {
-                    planets[planetState.planetID].apply {
-                        this as RenderablePlanet
+                    planets[planetState.planetID]!!.apply {
                         owner = planetState.owner
                         ownerShipRatio = planetState.ownershipRatio
+                        magicNumber = planetState.magicNumber
                     }
 
                     for (movingArmy in planetState.movingArmies) {
@@ -120,9 +136,10 @@ object GameStateListener : GameChangeListener {
 
             Platform.runLater {
                 val context = GameVis.graphicsContext
+                val renderState = GameVis.renderState
                 if (context != null) {
 //                    println("Thread id rendering: " + Thread.currentThread().id)
-                    GameObjects.render(context)
+                    GameObjects.render(context, renderState)
                 }
             }
 
