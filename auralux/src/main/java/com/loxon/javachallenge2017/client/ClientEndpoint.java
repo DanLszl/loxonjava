@@ -2,8 +2,10 @@ package com.loxon.javachallenge2017.client;
 
 import com.google.gson.Gson;
 import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
+import com.loxon.javachallenge2017.pack.descriptionclasses.Planet;
 import com.loxon.javachallenge2017.pack.responses.Response;
 import com.loxon.javachallenge2017.pack.stateclasses.GameState;
+import com.loxon.javachallenge2017.strategy.HardCodedGraph;
 import com.loxon.javachallenge2017.strategy.Strategy;
 import com.loxon.javachallenge2017.strategy.StrategyFactory;
 
@@ -28,13 +30,17 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 
 	@Override
 	public void onMessage(String message) {
-		System.out.println(message);
 		Gson gson = new Gson();
 
 		if (firstMessage) {
 			gameDescription = gson.fromJson(message, GameDescription.class);
+			for (Planet planet : gameDescription.getPlanets()) {
+				planet.setNeighbours(HardCodedGraph.getNeighbours().get(planet.getPlanetID()));
+			}
+			String graphIncludedMessage = gson.toJson(gameDescription);
 			strategy = StrategyFactory.getStrategy(gameDescription);
 			firstMessage = !firstMessage;
+			System.out.println(graphIncludedMessage);
 		} else {
 			GameState gameState = gson.fromJson(message, GameState.class);
 			List<Response> responses = strategy.getResponse(gameState);

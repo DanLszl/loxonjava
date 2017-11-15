@@ -4,6 +4,10 @@ package com.loxon.javachallenge2017.pack.descriptionclasses;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Planet {
 
     @SerializedName("x")
@@ -18,6 +22,20 @@ public class Planet {
     @SerializedName("radius")
     @Expose
     private Integer radius;
+
+    //region Neighbours
+    @SerializedName("neighbours")
+    @Expose
+    private List<Integer> neighbours = new ArrayList<>(Arrays.asList(107, 110));
+
+    public List<Integer> getNeighbours() {
+        return neighbours;
+    }
+
+    public void setNeighbours(List<Integer> neighbours) {
+        this.neighbours = neighbours;
+    }
+    //endregion
 
     public Integer getX() {
         return x;

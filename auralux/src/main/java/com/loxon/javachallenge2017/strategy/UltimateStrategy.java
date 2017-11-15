@@ -6,13 +6,13 @@ import com.loxon.javachallenge2017.features.PlanetRadii;
 import com.loxon.javachallenge2017.features.Possession;
 import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
 import com.loxon.javachallenge2017.pack.descriptionclasses.Planet;
+import com.loxon.javachallenge2017.pack.descriptionclasses.Player;
 import com.loxon.javachallenge2017.pack.responses.Response;
 import com.loxon.javachallenge2017.pack.stateclasses.GameState;
 import com.loxon.javachallenge2017.pack.utility.GameDescriptionInfo;
 import com.loxon.javachallenge2017.pack.utility.GameStateInfo;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UltimateStrategy extends Strategy {
@@ -37,7 +37,7 @@ public class UltimateStrategy extends Strategy {
         Map<Integer, Double> planetRadiiValues = planetRadii.calculate();
         Map<Integer, Double> possessionValues = possession.calculate();
 
-        enemyAttackValues.entrySet().stream()
+        Map<Integer, Double> magicNumbers = enemyAttackValues.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
@@ -51,6 +51,33 @@ public class UltimateStrategy extends Strategy {
                         )
                 );
 
-        return null;
+
+
+        // Küldjünk oda, ahol nagyobb a magic number
+        // De csak akkor, ha egy threshold-nál nagyobb a különbség
+
+        //GameStateInfo.getPlanetsWithStationedArmies()
+        Player ourPlayer = GameDescriptionInfo.getOurPlayer(gameDescription);
+
+        Map<Integer, Double> ourStationedArmies = GameStateInfo.getStationedArmiesOfPlayer(gameState, ourPlayer.getUserID());
+
+        // nézzük végig a bolygók szomszédjait
+
+        List<Response> responses = new ArrayList<>();
+
+        ourStationedArmies.entrySet().stream()
+                .forEach(
+                        entry -> {
+                            Planet planet = GameDescriptionInfo.getPlanetWithId(gameDescription, entry.getKey());
+                            Integer worstNeighbor = planet.getNeighbours().stream().max(
+                                    Comparator.comparingDouble(magicNumbers::get)
+                            ).orElseGet(null);
+                            if (magicNumbers.get(worstNeighbor) > magicNumbers.get(entry.getKey()) * 1.05) {
+                                responses.add(new Response(entry.getKey(), worstNeighbor, (int) (entry.getValue() * 0.8)));
+                            }
+                        }
+                );
+
+        return responses;
     }
 }

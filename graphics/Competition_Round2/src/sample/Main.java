@@ -1,6 +1,7 @@
 package sample;
 
 import sample.ClientEndpoint;
+import sample.game.GameStateListener;
 import sample.game.GameVis;
 
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 import javax.websocket.ClientEndpointConfig;
@@ -36,6 +38,17 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException, DeploymentException, InterruptedException {
-       initGame();
+        // initGame();
+        new Thread(GameVis::startVisualization).start();
+        Scanner sc = new Scanner(System.in);
+        GameStateListener gameStateListener = GameStateListener.INSTANCE;
+        String lastMessage;
+
+        while (sc.hasNext()) {
+            String message = sc.nextLine();
+            gameStateListener.onMessage(message);
+            lastMessage = message;
+        }
+        System.out.printf("lastMessage");
     }
 }

@@ -321,5 +321,4 @@ public class GameStateInfo {
         return closestNotOur.get().getPlanetID();
     }
 
-
 }
