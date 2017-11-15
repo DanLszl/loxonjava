@@ -15,5 +15,5 @@ public abstract class Feature {
         this.gameState = gameState;
     }
 
-    public abstract Map<Planet, Double> calculate();
+    public abstract Map<Integer, Double> calculate();
 }

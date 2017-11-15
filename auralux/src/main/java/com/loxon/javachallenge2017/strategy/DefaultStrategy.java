@@ -21,8 +21,8 @@ public class DefaultStrategy extends Strategy {
     public List<Response> getResponse(GameState gameState) {
         Feature feature = new DefaultFeature(gameDescription, gameState);
 
-        Map<Planet, Double> values = feature.calculate();
-        Planet oneOfTheBiggest = values.entrySet().stream()
+        Map<Integer, Double> values = feature.calculate();
+        Integer oneOfTheBiggest = values.entrySet().stream()
                          .max(Map.Entry.comparingByValue())
                          .get()
                          .getKey();
@@ -52,7 +52,7 @@ public class DefaultStrategy extends Strategy {
 
 
 
-        Response response = new Response(armysPlanet.getPlanetID(), oneOfTheBiggest.getPlanetID(), ourArmy.getSize());
+        Response response = new Response(armysPlanet.getPlanetID(), oneOfTheBiggest, ourArmy.getSize());
         return Arrays.asList(response);
     }
 }

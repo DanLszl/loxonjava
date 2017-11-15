@@ -14,7 +14,7 @@ public class DefaultFeature extends Feature {
     }
 
     @Override
-    public Map<Planet, Double> calculate() {
+    public Map<Integer, Double> calculate() {
         String us = "preall";
         return gameDescription.getPlanets().stream()
                                     .filter(planet ->
@@ -23,6 +23,11 @@ public class DefaultFeature extends Feature {
                                                                            .findFirst()
                                                                         .get().getOwner())
                                     )
-                                    .collect(Collectors.toMap(Function.identity(), notOurPlanet -> (double) notOurPlanet.getRadius()));
+                                    .collect(
+                                            Collectors.toMap(
+                                                    notOurPlanet->notOurPlanet.getPlanetID(),
+                                                    notOurPlanet -> (double) notOurPlanet.getRadius()
+                                            )
+                                    );
     }
 }
