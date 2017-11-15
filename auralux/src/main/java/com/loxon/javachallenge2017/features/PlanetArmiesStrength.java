@@ -30,56 +30,26 @@ public class PlanetArmiesStrength extends Feature {
     public Map<Integer, Double> calculate() {
         Player ourPlayer = GameDescriptionInfo.getOurPlayer(gameDescription);
         String ourPlayerId = ourPlayer.getUserID();
-
-        // Getting stationed armies
+/*
         Map<Integer, List<StationedArmy>> planetStationedArmiesMap = GameStateInfo.getStationedArmies(gameState);
-
-
-        // Getting moving armies
         Map<Integer, List<MovingArmy>> planetMovingArmiesMap = GameStateInfo.getMovingArmies(gameState);
-
-        // Our stationed armies
         Map<Integer, Double> ourStationedArmy = GameStateInfo.getStationedArmiesOfPlayer(gameState, ourPlayerId);
-
-        // Enemy stationed army
-        Map<Integer, Double> enemyStationedArmy = GameStateInfo.getEnemyStationedArmies(gameState, ourPlayerId);
-
-        // Our moving armies
+        Map<Integer, Double> enemyStationedArmy = GameStateInfo.getStationedArmiesOfEnemy(gameState, ourPlayerId);
         Map<Integer, List<MovingArmy>> ourMovingArmies = GameStateInfo.getMovingArmiesOfPlayer(gameState, ourPlayerId);
-
-        // Enemy moving armies
         Map<Integer, List<MovingArmy>> enemyMovingArmies = GameStateInfo.getMovingArmiesOfEnemies(gameState, ourPlayerId);
-
-        // Our discounted armies
         Map<Integer, Double> ourDiscountedMovingArmies = GameStateInfo.getDiscountedMovingArmiesOfPlayer(gameDescription, gameState, ourPlayerId, discountFactor)
-
-        // Enemy discounted armies
         Map<Integer, Double> enemyDiscountedMovingArmies = GameStateInfo.getDiscountedMovingArmiesOfEnemy(gameDescription, gameState, ourPlayerId, discountFactor);
+*/
 
-        Map<Integer, Double> ourArmiesStrength = GameStateInfo.getArmiesStrengthOfPlayer(gameDescription, gameState, ourPlayerId, discountFactor);ourStationedArmy.entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry ->
-                                        entry.getValue() + ourDiscountedMovingArmies.get(entry.getKey())
-                        )
-                );
-
-        Map<Integer, Double> enemyArmiesStrength = enemyStationedArmy.entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry ->
-                                        entry.getValue() + enemyDiscountedMovingArmies.get(entry.getKey())
-                        )
-                );
+        Map<Integer, Double> ourArmiesStrength = GameStateInfo.getArmiesStrengthOfPlayer(gameDescription, gameState, ourPlayerId, discountFactor);
+        Map<Integer, Double> enemyArmiesStrength = GameStateInfo.getArmiesStrengthOfEnemy(gameDescription, gameState, ourPlayerId, discountFactor);
 
         Map<Integer, Double> planetArmiesStrength = enemyArmiesStrength.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
                                 entry ->
-                                        entry.getValue() / ourArmiesStrength.get(entry.getKey())
+                                        entry.getValue() / (1 + ourArmiesStrength.get(entry.getKey()))
 
                         )
                 );
