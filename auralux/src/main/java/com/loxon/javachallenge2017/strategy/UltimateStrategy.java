@@ -141,6 +141,13 @@ public class UltimateStrategy extends Strategy {
         Map<Integer, Map<Integer, Double>> helpablePlanets = ourMovableArmies.entrySet().stream()
                 .filter(integerDoubleEntry -> GameStateInfo.getPlanetsAndOwnershipOfPlayer(gameState, ourPlayer)
                         .get(integerDoubleEntry.getKey()) >= 1.0)
+                .filter(integerDoubleEntry ->
+                        GameStateInfo.getArmiesStrengthOfEnemy(gameDescription, gameState, ourPlayer.getUserID(), 1.1)
+                                .get(integerDoubleEntry.getKey()) <
+                                GameStateInfo.getArmiesStrengthOfPlayer(
+                                        gameDescription, gameState, ourPlayer.getUserID(), 1.1)
+                                        .get(integerDoubleEntry.getKey())
+                )
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
