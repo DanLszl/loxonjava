@@ -13,12 +13,12 @@ import com.loxon.javachallenge2017.pack.utility.GameDescriptionInfo;
 import com.loxon.javachallenge2017.pack.utility.GameStateInfo;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UltimateStrategy extends Strategy {
 
     Map<Integer, Double> magicNumbers;
+    private double discountFactor = 1.05;
 
     public UltimateStrategy(GameDescription gameDescription) {
         super(gameDescription);
@@ -27,10 +27,7 @@ public class UltimateStrategy extends Strategy {
                 .forEach(planet -> magicNumbers.put(planet.getPlanetID(), 0.0));
     }
 
-
-
-    @Override
-    public Response getResponse(GameState gameState) {
+    public Map<Integer, Double> calculateMagicNumbers(GameState gameState) {
         EnemyAttackConcentration enemyAttackConcentration = new EnemyAttackConcentration(gameDescription, gameState);
         PlanetArmiesStrength planetArmiesStrength = new PlanetArmiesStrength(gameDescription, gameState);
         PlanetRadii planetRadii = new PlanetRadii(gameDescription, gameState);
@@ -56,11 +53,11 @@ public class UltimateStrategy extends Strategy {
                                 entry -> {
                                     Integer id = entry.getKey();
                                     System.err.println(entry.getKey() + "ID: " +
-                                    " Attack conc: " + w_ac * entry.getValue()+
-                                    " Attack strent: " + w_as * planetArmiesValues.get(id) +
-                                    " Radius: " + w_r * planetRadiiValues.get(id) +
-                                    " Posssession: " + w_p * possessionValues.get(id) +
-                                    " Ourconc: " + our_conc * ourAttackConcentrationValues.get(id));
+                                            " Attack conc: " + w_ac * entry.getValue() +
+                                            " Attack strent: " + w_as * planetArmiesValues.get(id) +
+                                            " Radius: " + w_r * planetRadiiValues.get(id) +
+                                            " Posssession: " + w_p * possessionValues.get(id) +
+                                            " Ourconc: " + our_conc * ourAttackConcentrationValues.get(id));
                                     return w_ac * entry.getValue()
                                             - w_as * planetArmiesValues.get(id)
                                             + w_r * planetRadiiValues.get(id)
@@ -73,17 +70,24 @@ public class UltimateStrategy extends Strategy {
         // TODO
         double interpolationSmoothness = 0.2;
 
-        magicNumbers = momentaryMagicNumbers.entrySet().stream()
+        return momentaryMagicNumbers.entrySet().stream()
                 .collect(
-                    Collectors.toMap(
-                            entry -> entry.getKey(),
-                            entry -> {
-                                double previous = magicNumbers.get(entry.getKey());
-                                double current = entry.getValue();
-                                return (current - previous) * interpolationSmoothness + previous;
-                            }
-                    )
+                        Collectors.toMap(
+                                entry -> entry.getKey(),
+                                entry -> {
+                                    double previous = magicNumbers.get(entry.getKey());
+                                    double current = entry.getValue();
+                                    return (current - previous) * interpolationSmoothness + previous;
+                                }
+                        )
                 );
+
+    }
+
+    @Override
+    public Response getResponse(GameState gameState) {
+
+        magicNumbers = calculateMagicNumbers(gameState);
 
         // Küldjünk oda, ahol nagyobb a magic number
         // De csak akkor, ha egy threshold-nál nagyobb a különbség
@@ -142,8 +146,14 @@ public class UltimateStrategy extends Strategy {
                         )
                 );
 
-        // Ki kéne szedni a legrosszabb helyzetben lévő planet-et
 
+        if (helpablePlanets.size() == 0) {
+            // nem tudunk mit csinálni :(
+            return null;
+        }
+
+
+        // Ki kéne szedni a legrosszabb helyzetben lévő planet-et
         Map.Entry<Integer, Map<Integer, Double>> thisPlanetMustHelp = helpablePlanets.entrySet().stream()
                 .max(
                         Comparator.comparingDouble(
@@ -155,6 +165,8 @@ public class UltimateStrategy extends Strategy {
                         )
                 )
                 .orElse(null);
+
+
 
         Map.Entry<Integer, Double> thisPlanetNeedsTheMostHelp = thisPlanetMustHelp.getValue().entrySet().stream()
                 .max(
@@ -180,27 +192,34 @@ public class UltimateStrategy extends Strategy {
 
             if (sizeInt >= gameDescription.getMinMovableArmySize()) response = new Response(from, to, sizeInt);
         }
+        Double numOfAllSoldiers = ourStationedArmies.get(from);
+//
+//        Map<Integer, Double> armiesStrength = GameStateInfo.getArmiesStrengthOfPlayer(gameDescription, gameState, ourPlayer.getUserID(), discountFactor);
+//        Double fromArmiesStrength = armiesStrength.get(from);
+//        Double toArmiesStrength = armiesStrength.get(to);
+
+//        (a-x)/(b+x) = q
+//        a-x = qb + qx
+//        x = a-qb-qx
+//        (1+q)x = a-qb
+//        x = (a-qb)/(1+q)
+//
+//        double q = thisPlanetNeedsTheMostHelp.getValue();
+//        double armySize = (fromArmiesStrength - q * toArmiesStrength)/(1 + q);
 
 
-/*        for (Map.Entry<Integer, Double> stationedArmy : ourStationedArmies.entrySet()) {
-            Planet planet = GameDescriptionInfo.getPlanetWithId(gameDescription, stationedArmy.getKey());
-            Double maxMagic = -600.0;
-            Integer maxId = 0;
-            for (Integer neighborId : planet.getNeighbours()) {
-                double currentMagic = magicNumbers.get(neighborId);
-                if (currentMagic > maxMagic) {
-                    maxMagic = currentMagic;
-                    maxId = neighborId;
-                }
-            }
+//        // Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
+//        Double size = armySize;
+//        Integer sizeInt = size.intValue();
+//
+//        if (numOfAllSoldiers > gameDescription.getMinMovableArmySize())
+//            sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
+//
+//        Response response = null;
+//        if(sizeInt >= gameDescription.getMinMovableArmySize())
+//            response = new Response(from, to, sizeInt);
 
-            if (magicNumbers.get(maxId) > magicNumbers.get(stationedArmy.getKey()) * 1.4) {
-                responses.add(new Response(stationedArmy.getKey(), maxId, stationedArmy.getValue().intValue()));
-            }
-        }*/
-
-
-
+        // Magic number printing
         List<MagicValue> magicValues = magicNumbers.entrySet().stream()
                 .map(entry -> new MagicValue(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());

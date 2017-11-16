@@ -16,7 +16,7 @@ interface Renderable {
 }
 
 val idleColor = Color.web("0xfecea8")
-val magicColor = Color.YELLOW //Color.web("0xff847c")
+val magicColor = Color.YELLOW // Color.web("0xff847c")
 val connectionColor = Color.WHITESMOKE
 val planetColors: List<Color> = listOf(Color.web("0x99b898"), Color.web("0xe84a5f"), Color.DARKVIOLET, Color.BEIGE, Color.BISQUE)
 val backgroundColor = Color.web("0x2a3638")
@@ -37,7 +37,6 @@ class PlanetsBackground : Renderable {
                 fillText(renderState.planetRenderState.toString(), 10.0, 100.0)
                 fillText(renderState.unitRenderState.toString(), 10.0, 150.0)
             }
-
         }
     }
 }
@@ -117,6 +116,16 @@ class RenderablePlanet(x: Int, y: Int, radius: Int, val id: Int) : Renderable {
                     }
                     PlanetRenderState.VisibleAll -> {
                         // TODO
+                    }
+                    PlanetRenderState.Dani -> {
+                        stroke()
+                        stroke = magicColor
+                        val magicRad = (1.0 + magicNumber / 2) * radius
+                        drawCircle(x, y, magicRad)
+                        fill()
+
+                        fill = idleColor.interpolate(ownerColor, ownerShipRatio)
+                        drawCircle(x, y, radius)
                     }
                 }
 
