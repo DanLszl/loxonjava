@@ -24,6 +24,14 @@ public class UltimateStrategy extends Strategy {
     Map<Integer, Double> magicNumbers;
     private double discountFactor = 1.05;
 
+    public Map<Integer, Double> getMagicNumbers() {
+        return magicNumbers;
+    }
+
+    public void setMagicNumbers(Map<Integer, Double> magicNumbers) {
+        this.magicNumbers = magicNumbers;
+    }
+
     public UltimateStrategy(GameDescription gameDescription) {
         super(gameDescription);
         magicNumbers = new HashMap<>();
@@ -111,7 +119,7 @@ public class UltimateStrategy extends Strategy {
             return null;
         }
 
-        magicNumbers = calculateMagicNumbers(gameState);
+        // magicNumbers = calculateMagicNumbers(gameState);
 
         // Küldjünk oda, ahol nagyobb a magic number
         // De csak akkor, ha egy threshold-nál nagyobb a különbség
