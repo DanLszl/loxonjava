@@ -25,7 +25,7 @@ public class GameStateInfo {
     }
 
 
-    // Itt lehet null a stationedArmy...
+    // Itt lehet üres a stationedArmy...
     public static Map<Integer, List<StationedArmy>> getStationedArmies(GameState gameState) {
         return gameState.getPlanetStates().stream()
                 .collect(
@@ -48,33 +48,29 @@ public class GameStateInfo {
     }
 
     public static Map<Integer, Double> getStationedArmiesOfPlayer(GameState gameState, String playerId) {
-        Map<Integer, List<StationedArmy>> planetStationedArmiesMap = getStationedArmies(gameState);
-        return planetStationedArmiesMap.entrySet().stream()
+        Map<Integer, List<StationedArmy>> planetStationedArmies = getStationedArmies(gameState);
+        return planetStationedArmies.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
-                                entry -> entry != null
-                                        ? entry.getValue().stream()
+                                entry -> entry.getValue().stream()
                                                 .filter(stationedArmy -> playerId.equals(stationedArmy.getOwner()))
                                                 .mapToDouble(stationedArmy -> stationedArmy.getSize().doubleValue())
                                                 .sum()
-                                        : 0
                         )
                 );
     }
 
     public static Map<Integer, Double> getStationedArmiesOfEnemy(GameState gameState, String playerId) {
-        Map<Integer, List<StationedArmy>> planetStationedArmiesMap = getStationedArmies(gameState);
-        return planetStationedArmiesMap.entrySet().stream()
+        Map<Integer, List<StationedArmy>> planetStationedArmies = getStationedArmies(gameState);
+        return planetStationedArmies.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
-                                entry -> entry != null
-                                        ? entry.getValue().stream()
+                                entry -> entry.getValue().stream()
                                                 .filter(stationedArmy -> !playerId.equals(stationedArmy.getOwner()))
                                                 .mapToDouble(stationedArmy -> stationedArmy.getSize().doubleValue())
                                                 .sum()
-                                        : 0
                         )
                 );
     }
@@ -93,8 +89,8 @@ public class GameStateInfo {
     }
 
     public static Map<Integer, List<MovingArmy>> getMovingArmiesOfEnemies(GameState gameState, String playerId) {
-        Map<Integer, List<MovingArmy>> planetMovingArmiesMap = getMovingArmies(gameState);
-        return planetMovingArmiesMap.entrySet().stream()
+        Map<Integer, List<MovingArmy>> planetMovingArmies = getMovingArmies(gameState);
+        return planetMovingArmies.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
@@ -117,21 +113,20 @@ public class GameStateInfo {
         return distance / gameDescription.getMovementSpeed();
     }
 
-    public static Map<Integer, Double> getDiscountedMovingArmiesOfPlayer(GameDescription gameDescription, GameState gameState, String playerId, Double discountFactor) {
+    public static Map<Integer, Double> getDiscountedMovingArmiesOfPlayer(
+            GameDescription gameDescription, GameState gameState, String playerId, Double discountFactor) {
         Map<Integer, List<MovingArmy>> ourMovingArmies = getMovingArmiesOfPlayer(gameState, playerId);
         return ourMovingArmies.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
-                                entry -> entry != null
-                                        ?   entry.getValue().stream()
+                                entry -> entry.getValue().stream()
                                             .map(movingArmy -> {
                                                 double time = getMovingArmyTime(gameDescription, entry.getKey(), movingArmy);
                                                 return movingArmy.getSize() / Math.pow(discountFactor, time);
                                             })
                                             .mapToDouble(Double::doubleValue)
                                             .sum()
-                                        : 0
                         )
                 );
     }
@@ -142,20 +137,21 @@ public class GameStateInfo {
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
-                                entry -> entry != null
-                                        ?   entry.getValue().stream()
+                                entry -> entry.getValue().stream()
                                             .map(movingArmy -> {
                                                 double time = getMovingArmyTime(gameDescription, entry.getKey(), movingArmy);
                                                 return movingArmy.getSize() / Math.pow(discountFactor, time);
                                             })
                                             .mapToDouble(Double::doubleValue)
                                             .sum()
-                                        : 0
                         )
                 );
     }
 
-    public static Map<Integer, Double> getArmiesStrengthOfPlayer(GameDescription gameDescription, GameState gameState, String playerId, Double discountFactor) {
+    public static Map<Integer, Double> getArmiesStrengthOfPlayer(GameDescription gameDescription,
+                                                                 GameState gameState,
+                                                                 String playerId,
+                                                                 Double discountFactor) {
         Map<Integer, Double> ourStationedArmy = getStationedArmiesOfPlayer(gameState, playerId);
         Map<Integer, Double> ourDiscountedMovingArmies = getDiscountedMovingArmiesOfPlayer(gameDescription, gameState, playerId, discountFactor);
 
@@ -169,7 +165,10 @@ public class GameStateInfo {
                 );
     }
 
-    public static Map<Integer, Double> getArmiesStrengthOfEnemy(GameDescription gameDescription, GameState gameState, String playerId, Double discountFactor) {
+    public static Map<Integer, Double> getArmiesStrengthOfEnemy(GameDescription gameDescription,
+                                                                GameState gameState,
+                                                                String playerId,
+                                                                Double discountFactor) {
         Map<Integer, Double> enemyStationedArmy = getStationedArmiesOfEnemy(gameState, playerId);
         Map<Integer, Double> enemyDiscountedMovingArmies = getDiscountedMovingArmiesOfEnemy(gameDescription, gameState, playerId, discountFactor);
 
@@ -182,6 +181,13 @@ public class GameStateInfo {
                         )
                 );
     }
+
+
+
+
+    /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ULTIMATE STRATEGY HELPERS ENDED ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
+
 
     public static List<Player> getEnemyPlayers(GameDescription gameDescription, Player player) {
         return gameDescription.getPlayers().stream()
@@ -270,6 +276,13 @@ public class GameStateInfo {
                 .findFirst()
                 .get();
     }
+
+
+
+
+
+
+
 
     public static Integer getClosestWeightedWithArmies(GameDescription gameDescription, GameState gameState, Player player) {
         List<Planet> ownedPlanets = gameState.getPlanetStates().stream()

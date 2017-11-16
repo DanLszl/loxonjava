@@ -32,7 +32,7 @@ public class UltimateStrategy extends Strategy {
 
 
     @Override
-    public List<Response> getResponse(GameState gameState) {
+    public Response getResponse(GameState gameState) {
         EnemyAttackConcentration enemyAttackConcentration = new EnemyAttackConcentration(gameDescription, gameState);
         PlanetArmiesStrength planetArmiesStrength = new PlanetArmiesStrength(gameDescription, gameState);
         PlanetRadii planetRadii = new PlanetRadii(gameDescription, gameState);
@@ -125,6 +125,8 @@ public class UltimateStrategy extends Strategy {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return responses;
+        //return responses;
+        // TODO
+        return null;
     }
 }

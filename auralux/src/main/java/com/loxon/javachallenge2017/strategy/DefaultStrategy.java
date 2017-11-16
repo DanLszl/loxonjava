@@ -18,7 +18,7 @@ public class DefaultStrategy extends Strategy {
     }
 
     @Override
-    public List<Response> getResponse(GameState gameState) {
+    public Response getResponse(GameState gameState) {
         Feature feature = new DefaultFeature(gameDescription, gameState);
 
         Map<Integer, Double> values = feature.calculate();
@@ -53,6 +53,6 @@ public class DefaultStrategy extends Strategy {
 
 
         Response response = new Response(armysPlanet.getPlanetID(), oneOfTheBiggest, ourArmy.getSize());
-        return Arrays.asList(response);
+        return response;
     }
 }
