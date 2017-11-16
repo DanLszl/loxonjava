@@ -12,7 +12,7 @@ class AlternateStrategy(gameDescription: GameDescription) : Strategy(gameDescrip
 
     val ultimateStrategy: UltimateStrategy = UltimateStrategy(gameDescription)
 
-    override fun getResponse(gameState: GameState): Response {
+    override fun getResponse(gameState: GameState): Response? {
         val magic: Map<Int, Double> = ultimateStrategy.calculateMagicNumbers(gameState)
 
         val game = CalculateGame.create(ImportantData(
