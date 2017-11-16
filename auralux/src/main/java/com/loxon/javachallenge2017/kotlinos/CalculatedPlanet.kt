@@ -99,7 +99,7 @@ data class CalculatedPlanet(
         get() = enemyStationedArmies.sumBy { it.size }
 
     val maxIncomingEnemy: Int
-        get() = incomingEnemy.maxBy { it.size }!!.size
+        get() = incomingEnemy.maxBy { it.size }?.size ?: 0
 
     val enemyStrength: Double
         get() {
