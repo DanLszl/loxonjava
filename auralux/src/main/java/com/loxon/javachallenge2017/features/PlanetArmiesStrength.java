@@ -34,7 +34,7 @@ public class PlanetArmiesStrength extends Feature {
                         Collectors.toMap(
                                 entry -> entry.getKey(),
                                 entry ->
-                                        entry.getValue() / (1 + ourArmiesStrength.get(entry.getKey()))
+                                        entry.getValue() / 3.0 * (1 + ourArmiesStrength.get(entry.getKey()))
 
                         )
                 );

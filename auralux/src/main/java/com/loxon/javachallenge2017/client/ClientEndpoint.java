@@ -45,10 +45,11 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 		} else {
 			GameState gameState = gson.fromJson(message, GameState.class);
 			Response response = strategy.getResponse(gameState);
-
-			String answer = gson.toJson(response);
-			System.err.println(answer);
-			sendMessage(answer);
+			if (response != null) {
+				String answer = gson.toJson(response);
+				System.err.println(answer);
+				sendMessage(answer);
+			}
 
 			System.out.println(message);
 			if (gameState.getGameStatus().equals("ENDED")) {

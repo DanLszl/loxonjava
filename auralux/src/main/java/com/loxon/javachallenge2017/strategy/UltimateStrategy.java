@@ -160,11 +160,16 @@ public class UltimateStrategy extends Strategy {
 
         Integer from = thisPlanetMustHelp.getKey();
         Integer to = thisPlanetNeedsTheMostHelp.getKey();
+        //System.err.println(from + "  ->>>>>  " + to);
 
+        Double numOfAllSoldiers = ourStationedArmies.get(from);
         Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
         Integer sizeInt = size.intValue();
 
-        Response response = new Response(from, to, sizeInt);
+        if (numOfAllSoldiers > gameDescription.getMinMovableArmySize()) sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
+
+        Response response = null;
+        if(sizeInt >= gameDescription.getMinMovableArmySize()) response = new Response(from, to, sizeInt);
 
 
 /*        for (Map.Entry<Integer, Double> stationedArmy : ourStationedArmies.entrySet()) {
