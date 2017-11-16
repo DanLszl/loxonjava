@@ -4,6 +4,7 @@ import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Util {
@@ -28,5 +29,18 @@ public class Util {
                                 entry -> (entry.getValue() - min) / (max-min)
                         )
                 );
+    }
+
+    public static Map<Integer, Double> normalizeRadiuses(Map<Integer, Double> values) {
+        Double max = values.entrySet().stream()
+                .mapToDouble(entry -> entry.getValue())
+                .max()
+                .getAsDouble();
+
+        return values.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey(),
+                        entry -> entry.getValue() / max
+                ));
     }
 }

@@ -22,6 +22,6 @@ public class PlanetRadii extends Feature {
                                 planet -> planet.getRadius().doubleValue()
                         )
                 );
-        return Util.normalizeValues(planetRadii);
+        return Util.normalizeRadiuses(planetRadii);
     }
 }
