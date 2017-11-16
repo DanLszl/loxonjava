@@ -24,8 +24,6 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 	private GameDescription gameDescription;
 	private Strategy strategy;
 
-	private AtomicBoolean lock = new AtomicBoolean(false);
-
 	@Override
 	public void onOpen(Session session, EndpointConfig config) {
 		session.addMessageHandler(this);
@@ -34,51 +32,31 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 
 	@Override
 	public void onMessage(String message) {
-		boolean proceded = false;
-
-		try
-			{
-
-				if (lock.getAndSet(true)) {
-					System.err.println("#### Returned ####");
-					return;
-				}
-				proceded = true;
-				Gson gson = new Gson();
-				System.err.println("OnMessage");
-				if (firstMessage) {
-					gameDescription = gson.fromJson(message, GameDescription.class);
-					for (Planet planet : gameDescription.getPlanets()) {
-						planet.setNeighbours(HardCodedGraph.getNeighbours().get(planet.getPlanetID()));
-					}
-					String graphIncludedMessage = gson.toJson(gameDescription);
-					strategy = StrategyFactory.getStrategy(gameDescription);
-					firstMessage = !firstMessage;
-					System.out.println(graphIncludedMessage);
-				} else {
-					GameState gameState = gson.fromJson(message, GameState.class);
-					Response response = strategy.getResponse(gameState);
-					if (response != null) {
-						String answer = gson.toJson(response);
-						System.err.println(answer);
-						sendMessage(answer);
-					}
-
-					System.out.println(message);
-					if (gameState.getGameStatus().equals("ENDED")) {
-						for (Standing standing: gameState.getStandings()) {
-							System.err.println(standing.toString());
-						}
-					}
-
-				}
-				System.err.println("OnMessageEnd");
+		Gson gson = new Gson();
+		if (firstMessage) {
+			gameDescription = gson.fromJson(message, GameDescription.class);
+			for (Planet planet : gameDescription.getPlanets()) {
+				planet.setNeighbours(HardCodedGraph.getNeighbours().get(planet.getPlanetID()));
 			}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			if (proceded) lock.set(false);
+			String graphIncludedMessage = gson.toJson(gameDescription);
+			strategy = StrategyFactory.getStrategy(gameDescription);
+			firstMessage = !firstMessage;
+			System.out.println(graphIncludedMessage);
+		} else {
+			GameState gameState = gson.fromJson(message, GameState.class);
+			Response response = strategy.getResponse(gameState);
+			if (response != null) {
+				String answer = gson.toJson(response);
+				System.err.println(answer);
+				sendMessage(answer);
+			}
+
+			System.out.println(message);
+			if (gameState.getGameStatus().equals("ENDED")) {
+				for (Standing standing: gameState.getStandings()) {
+					System.err.println(standing.toString());
+				}
+			}
 		}
 	}
 

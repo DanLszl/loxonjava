@@ -118,9 +118,9 @@ class RenderablePlanet(x: Int, y: Int, radius: Int, val id: Int) : Renderable {
                         // TODO
                     }
                     PlanetRenderState.Dani -> {
-                        stroke()
-                        stroke = magicColor
-                        val magicRad = (1.0 + magicNumber / 2) * radius
+                        fill()
+                        fill = magicColor
+                        val magicRad = (1.0 + magicNumber / 1.5) * radius
                         drawCircle(x, y, magicRad)
                         fill()
 

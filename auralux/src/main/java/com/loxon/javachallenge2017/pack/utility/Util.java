@@ -26,7 +26,8 @@ public class Util {
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
-                                entry -> (entry.getValue() - min) / (max-min + 0.01)
+                                //entry -> (entry.getValue() - min) / (max-min + 0.01)
+                                entry -> entry.getValue() / max
                         )
                 );
     }

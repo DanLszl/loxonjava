@@ -30,14 +30,25 @@ public class Possession extends Feature {
     private double getFunctionValue(boolean isOurPlayer, double possessionRatio) {
         return getPossessionFunctionValue(isOurPlayer ? -possessionRatio : possessionRatio);
     }
+//
+//    private double getPossessionFunctionValue(double x) {
+//        if(x < -1.0 || x > 1.0) throw new RuntimeException("x value should be between -1 and 1!");
+//        double m = -4.0;
+//        double b = 10.0;
+//        if(x == -1.0 ) return 0.01;
+//        else if (x == 0.0) return b*2;
+//        else return m * x + b;
+//    }
 
     private double getPossessionFunctionValue(double x) {
         if(x < -1.0 || x > 1.0) throw new RuntimeException("x value should be between -1 and 1!");
-        double m = -4.0;
         double b = 10.0;
         if(x == -1.0 ) return 0.01;
-        else if (x == 0.0) return b*2;
-        else if (x < 0.0) return b;
-        else return m * x + b;
+        //else if (x == 0.0) return b*2;
+            //else if (x < 0.0) return b;
+        else if (x == 1.0)
+            return 0.001;
+        else
+            return -Math.tan(x) + b;
     }
 }

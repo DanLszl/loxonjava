@@ -12,10 +12,14 @@ import com.loxon.javachallenge2017.pack.stateclasses.GameState;
 import com.loxon.javachallenge2017.pack.utility.GameDescriptionInfo;
 import com.loxon.javachallenge2017.pack.utility.GameStateInfo;
 
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class UltimateStrategy extends Strategy {
+
+    Deque<GameState> gameStatesHistory = new ArrayDeque<>();
+    public final int past = 3;
 
     Map<Integer, Double> magicNumbers;
     private double discountFactor = 1.05;
@@ -27,18 +31,32 @@ public class UltimateStrategy extends Strategy {
                 .forEach(planet -> magicNumbers.put(planet.getPlanetID(), 0.0));
     }
 
+    private void saveGameState(GameState gameState) {
+        gameStatesHistory.add(gameState);
+    }
+
+    private GameState getPastGameState() {
+
+        if (gameStatesHistory.size() > past) {
+            return gameStatesHistory.getFirst();
+        } else {
+            return null;
+        }
+    }
+
     public Map<Integer, Double> calculateMagicNumbers(GameState gameState) {
+
         EnemyAttackConcentration enemyAttackConcentration = new EnemyAttackConcentration(gameDescription, gameState);
         PlanetArmiesStrength planetArmiesStrength = new PlanetArmiesStrength(gameDescription, gameState);
         PlanetRadii planetRadii = new PlanetRadii(gameDescription, gameState);
         Possession possession = new Possession(gameDescription, gameState);
         OurAttackConcentration ourAttackConcentration = new OurAttackConcentration(gameDescription, gameState);
 
-        double w_ac = 0.9;
-        double w_as = 0.7;
-        double w_r = 1.0;
+        double w_ac = 0.05;
+        double w_as = 0.05;
+        double w_r = 0.02;
         double w_p = 1.0;
-        double our_conc = 0.6;
+        double our_conc = 0.02;
 
         Map<Integer, Double> enemyAttackValues = enemyAttackConcentration.calculate();
         Map<Integer, Double> planetArmiesValues = planetArmiesStrength.calculate();
@@ -86,6 +104,12 @@ public class UltimateStrategy extends Strategy {
 
     @Override
     public Response getResponse(GameState gameState) {
+        saveGameState(gameState);
+        gameState = getPastGameState();
+        if (gameState == null) {
+            return null;
+        }
+        gameStatesHistory.clear();
 
         magicNumbers = calculateMagicNumbers(gameState);
 
@@ -179,45 +203,47 @@ public class UltimateStrategy extends Strategy {
 
         Integer from = thisPlanetMustHelp.getKey();
         Integer to = thisPlanetNeedsTheMostHelp.getKey();
-        Response response = null;
-        if(magicNumbers.get(from) * 1.2 < magicNumbers.get(to)) {
-            //System.err.println(from + "  ->>>>>  " + to);
+//        Response response = null;
 
-            Double numOfAllSoldiers = ourStationedArmies.get(from);
-            Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
-            Integer sizeInt = size.intValue();
 
-            if (numOfAllSoldiers > gameDescription.getMinMovableArmySize())
-                sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
-
-            if (sizeInt >= gameDescription.getMinMovableArmySize()) response = new Response(from, to, sizeInt);
-        }
-        Double numOfAllSoldiers = ourStationedArmies.get(from);
+//        if(magicNumbers.get(from) * 1.2 < magicNumbers.get(to)) {
+//            //System.err.println(from + "  ->>>>>  " + to);
 //
-//        Map<Integer, Double> armiesStrength = GameStateInfo.getArmiesStrengthOfPlayer(gameDescription, gameState, ourPlayer.getUserID(), discountFactor);
-//        Double fromArmiesStrength = armiesStrength.get(from);
-//        Double toArmiesStrength = armiesStrength.get(to);
+//            Double numOfAllSoldiers = ourStationedArmies.get(from);
+//            Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
+//            Integer sizeInt = size.intValue();
+//
+//            if (numOfAllSoldiers > gameDescription.getMinMovableArmySize())
+//                sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
+//
+//            if (sizeInt >= gameDescription.getMinMovableArmySize()) response = new Response(from, to, sizeInt);
+//        }
+        Double numOfAllSoldiers = ourStationedArmies.get(from);
+
+        Map<Integer, Double> armiesStrength = GameStateInfo.getArmiesStrengthOfPlayer(gameDescription, gameState, ourPlayer.getUserID(), discountFactor);
+        Double fromArmiesStrength = armiesStrength.get(from);
+        Double toArmiesStrength = armiesStrength.get(to);
 
 //        (a-x)/(b+x) = q
 //        a-x = qb + qx
 //        x = a-qb-qx
 //        (1+q)x = a-qb
 //        x = (a-qb)/(1+q)
-//
-//        double q = thisPlanetNeedsTheMostHelp.getValue();
-//        double armySize = (fromArmiesStrength - q * toArmiesStrength)/(1 + q);
+
+        double q = thisPlanetNeedsTheMostHelp.getValue();
+        double armySize = (fromArmiesStrength - q * toArmiesStrength)/(1 + q);
 
 
-//        // Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
-//        Double size = armySize;
-//        Integer sizeInt = size.intValue();
-//
-//        if (numOfAllSoldiers > gameDescription.getMinMovableArmySize())
-//            sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
-//
-//        Response response = null;
-//        if(sizeInt >= gameDescription.getMinMovableArmySize())
-//            response = new Response(from, to, sizeInt);
+        // Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
+        Double size = armySize;
+        Integer sizeInt = size.intValue();
+
+        if (numOfAllSoldiers > gameDescription.getMinMovableArmySize())
+            sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
+
+        Response response = null;
+        if(sizeInt >= gameDescription.getMinMovableArmySize())
+            response = new Response(from, to, sizeInt);
 
         // Magic number printing
         List<MagicValue> magicValues = magicNumbers.entrySet().stream()

@@ -10,17 +10,29 @@ public class HardCodedGraph {
 
         neighbours = new HashMap<>();
 
-        neighbours.put(101, Arrays.asList(103, 105, 107));
-        neighbours.put(102, Arrays.asList(108, 106, 104));
-        neighbours.put(103, Arrays.asList(101, 105, 110));
-        neighbours.put(104, Arrays.asList(106, 102, 109));
-        neighbours.put(105, Arrays.asList(103, 101, 107, 110, 108));
+//        neighbours.put(101, Arrays.asList(103, 105, 107));
+//        neighbours.put(102, Arrays.asList(108, 106, 104));
+//        neighbours.put(103, Arrays.asList(101, 105, 110));
+//        neighbours.put(104, Arrays.asList(106, 102, 109));
+//        neighbours.put(105, Arrays.asList(103, 101, 107, 110, 108));
+//
+//        neighbours.put(106, Arrays.asList(108, 107, 109, 104, 102));
+//        neighbours.put(107, Arrays.asList(108, 105, 101, 106, 109));
+//        neighbours.put(108, Arrays.asList(110, 102, 106, 105, 107));
+//        neighbours.put(109, Arrays.asList(104, 106, 107));
+//        neighbours.put(110, Arrays.asList(103, 105, 108));
 
-        neighbours.put(106, Arrays.asList(108, 107, 109, 104, 102));
-        neighbours.put(107, Arrays.asList(108, 105, 101, 106, 109));
-        neighbours.put(108, Arrays.asList(110, 102, 106, 105, 107));
-        neighbours.put(109, Arrays.asList(104, 106, 107));
-        neighbours.put(110, Arrays.asList(103, 105, 108));
+        neighbours.put(101, Arrays.asList(103, 105, 107, 109));
+        neighbours.put(102, Arrays.asList(110, 108, 106, 104));
+        neighbours.put(103, Arrays.asList(101, 105, 107, 108, 110));
+        neighbours.put(104, Arrays.asList(106, 102, 107, 108, 109));
+        neighbours.put(105, Arrays.asList(103, 101, 106, 107, 110, 108));
+
+        neighbours.put(106, Arrays.asList(108, 107, 109, 104, 105, 102));
+        neighbours.put(107, Arrays.asList(108, 105, 103, 104, 101, 106, 109));
+        neighbours.put(108, Arrays.asList(110, 102, 106, 103, 104, 105, 107));
+        neighbours.put(109, Arrays.asList(101, 104, 106, 107));
+        neighbours.put(110, Arrays.asList(102, 103, 105, 108));
     }
 
 
