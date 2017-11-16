@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class PlanetArmiesStrength extends Feature {
 
     // TODO be able to change this from outside
-    private double discountFactor = 1.1;
+    private double discountFactor = 1.5;
 
 
     public PlanetArmiesStrength(GameDescription gameDescription, GameState gameState) {
@@ -34,7 +34,7 @@ public class PlanetArmiesStrength extends Feature {
                         Collectors.toMap(
                                 entry -> entry.getKey(),
                                 entry ->
-                                        entry.getValue() / 3.0 * (1 + ourArmiesStrength.get(entry.getKey()))
+                                        entry.getValue() / (1 + ourArmiesStrength.get(entry.getKey()))
 
                         )
                 );

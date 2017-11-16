@@ -34,8 +34,10 @@ public class Possession extends Feature {
     private double getPossessionFunctionValue(double x) {
         if(x < -1.0 || x > 1.0) throw new RuntimeException("x value should be between -1 and 1!");
         double m = -4.0;
-        double b = 5.0;
-        if(x == -1.0 ) return 0.0;
+        double b = 10.0;
+        if(x == -1.0 ) return 0.01;
+        else if (x == 0.0) return b*2;
+        else if (x < 0.0) return b;
         else return m * x + b;
     }
 }

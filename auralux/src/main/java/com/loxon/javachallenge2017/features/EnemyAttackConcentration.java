@@ -27,11 +27,13 @@ public class EnemyAttackConcentration extends Feature {
                 .mapToDouble(entry -> entry.getValue())
                 .sum();
 
+        double maxEnemyArmiesStrengthTogether = Math.max(enemyArmiesStrengthTogether, 0.01);
+
         Map<Integer, Double> attackConcentration = enemyArmiesStrength.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
-                                entry -> 1.0 - (entry.getValue() / enemyArmiesStrengthTogether)
+                                entry -> 1.0 - (entry.getValue() / maxEnemyArmiesStrengthTogether)
                         )
                 );
 

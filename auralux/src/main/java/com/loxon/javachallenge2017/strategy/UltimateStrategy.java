@@ -1,10 +1,7 @@
 package com.loxon.javachallenge2017.strategy;
 
 import com.google.gson.Gson;
-import com.loxon.javachallenge2017.features.EnemyAttackConcentration;
-import com.loxon.javachallenge2017.features.PlanetArmiesStrength;
-import com.loxon.javachallenge2017.features.PlanetRadii;
-import com.loxon.javachallenge2017.features.Possession;
+import com.loxon.javachallenge2017.features.*;
 import com.loxon.javachallenge2017.pack.descriptionclasses.GameDescription;
 import com.loxon.javachallenge2017.pack.descriptionclasses.Planet;
 import com.loxon.javachallenge2017.pack.descriptionclasses.Player;
@@ -38,16 +35,19 @@ public class UltimateStrategy extends Strategy {
         PlanetArmiesStrength planetArmiesStrength = new PlanetArmiesStrength(gameDescription, gameState);
         PlanetRadii planetRadii = new PlanetRadii(gameDescription, gameState);
         Possession possession = new Possession(gameDescription, gameState);
+        OurAttackConcentration ourAttackConcentration = new OurAttackConcentration(gameDescription, gameState);
 
-        double w_ac = 1.0;
-        double w_as = 1.0;
+        double w_ac = 0.9;
+        double w_as = 0.7;
         double w_r = 1.0;
         double w_p = 1.0;
+        double our_conc = 0.6;
 
         Map<Integer, Double> enemyAttackValues = enemyAttackConcentration.calculate();
         Map<Integer, Double> planetArmiesValues = planetArmiesStrength.calculate();
         Map<Integer, Double> planetRadiiValues = planetRadii.calculate();
         Map<Integer, Double> possessionValues = possession.calculate();
+        Map<Integer, Double> ourAttackConcentrationValues = ourAttackConcentration.calculate();
 
         Map<Integer, Double> momentaryMagicNumbers = enemyAttackValues.entrySet().stream()
                 .collect(
@@ -55,10 +55,17 @@ public class UltimateStrategy extends Strategy {
                                 entry -> entry.getKey(),
                                 entry -> {
                                     Integer id = entry.getKey();
+                                    System.err.println(entry.getKey() + "ID: " +
+                                    " Attack conc: " + w_ac * entry.getValue()+
+                                    " Attack strent: " + w_as * planetArmiesValues.get(id) +
+                                    " Radius: " + w_r * planetRadiiValues.get(id) +
+                                    " Posssession: " + w_p * possessionValues.get(id) +
+                                    " Ourconc: " + our_conc * ourAttackConcentrationValues.get(id));
                                     return w_ac * entry.getValue()
-                                            + w_as * planetArmiesValues.get(id)
+                                            - w_as * planetArmiesValues.get(id)
                                             + w_r * planetRadiiValues.get(id)
-                                            + w_p * possessionValues.get(id);
+                                            + w_p * possessionValues.get(id)
+                                            - our_conc * ourAttackConcentrationValues.get(id);
                                 }
                         )
                 );
@@ -160,16 +167,19 @@ public class UltimateStrategy extends Strategy {
 
         Integer from = thisPlanetMustHelp.getKey();
         Integer to = thisPlanetNeedsTheMostHelp.getKey();
-        //System.err.println(from + "  ->>>>>  " + to);
-
-        Double numOfAllSoldiers = ourStationedArmies.get(from);
-        Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
-        Integer sizeInt = size.intValue();
-
-        if (numOfAllSoldiers > gameDescription.getMinMovableArmySize()) sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
-
         Response response = null;
-        if(sizeInt >= gameDescription.getMinMovableArmySize()) response = new Response(from, to, sizeInt);
+        if(magicNumbers.get(from) * 1.2 < magicNumbers.get(to)) {
+            //System.err.println(from + "  ->>>>>  " + to);
+
+            Double numOfAllSoldiers = ourStationedArmies.get(from);
+            Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
+            Integer sizeInt = size.intValue();
+
+            if (numOfAllSoldiers > gameDescription.getMinMovableArmySize())
+                sizeInt = Math.max(sizeInt, gameDescription.getMinMovableArmySize());
+
+            if (sizeInt >= gameDescription.getMinMovableArmySize()) response = new Response(from, to, sizeInt);
+        }
 
 
 /*        for (Map.Entry<Integer, Double> stationedArmy : ourStationedArmies.entrySet()) {

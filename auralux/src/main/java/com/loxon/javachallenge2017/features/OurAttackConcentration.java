@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class OurAttackConcentration extends Feature {
 
-    private double discountFactor = 1.1;
+    private double discountFactor = 1.2;
 
     public OurAttackConcentration(GameDescription gameDescription, GameState gameState) {
         super(gameDescription, gameState);
@@ -19,21 +19,23 @@ public class OurAttackConcentration extends Feature {
 
     @Override
     public Map<Integer, Double> calculate() {
-        String otherPlayer = GameDescriptionInfo.getEnemyPlayers(gameDescription).get(0).getUserID();
-        Map<Integer, Double> ourArmiesStength = GameStateInfo.getArmiesStrengthOfEnemy(gameDescription, gameState, otherPlayer, discountFactor);
+        String ourPlayerId = GameDescriptionInfo.getOurPlayer(gameDescription).getUserID();
+        Map<Integer, Double> ourArmiesStength = GameStateInfo.getArmiesStrengthOfPlayer(gameDescription, gameState, ourPlayerId, discountFactor);
 
         double ourArmiesStrengthTogether = ourArmiesStength.entrySet().stream()
                 .mapToDouble(entry -> entry.getValue())
                 .sum();
 
+        double maxOurArmiesStrengthTogether = Math.max(ourArmiesStrengthTogether, 0.01);
+
         Map<Integer, Double> attackConcentration = ourArmiesStength.entrySet().stream()
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
-                                entry -> entry.getValue() / ourArmiesStrengthTogether
+                                entry -> entry.getValue() / maxOurArmiesStrengthTogether
                         )
                 );
 
-        return Util.normalizeValues(attackConcentration);
+        return attackConcentration;
     }
 }
