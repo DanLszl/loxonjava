@@ -53,11 +53,11 @@ public class UltimateStrategy extends Strategy {
         Possession possession = new Possession(gameDescription, gameState);
         OurAttackConcentration ourAttackConcentration = new OurAttackConcentration(gameDescription, gameState);
 
-        double w_ac = 0.05;
-        double w_as = 0.05;
-        double w_r = 0.02;
+        double w_ac = 0.5;
+        double w_as = 0.5;
+        double w_r = 0.5;
         double w_p = 1.0;
-        double our_conc = 0.02;
+        double our_conc = 0.3;
 
         Map<Integer, Double> enemyAttackValues = enemyAttackConcentration.calculate();
         Map<Integer, Double> planetArmiesValues = planetArmiesStrength.calculate();
@@ -224,14 +224,14 @@ public class UltimateStrategy extends Strategy {
         Double fromArmiesStrength = armiesStrength.get(from);
         Double toArmiesStrength = armiesStrength.get(to);
 
-//        (a-x)/(b+x) = q
+//        (b+x)/(a-x) = q
 //        a-x = qb + qx
 //        x = a-qb-qx
 //        (1+q)x = a-qb
 //        x = (a-qb)/(1+q)
 
         double q = thisPlanetNeedsTheMostHelp.getValue();
-        double armySize = (fromArmiesStrength - q * toArmiesStrength)/(1 + q);
+        double armySize = (q * fromArmiesStrength - toArmiesStrength)/(1 - q);
 
 
         // Double size = (ourStationedArmies.get(from) * thisPlanetNeedsTheMostHelp.getValue());
