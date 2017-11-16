@@ -18,49 +18,50 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<String> {
-	private Session session;
+    private Session session;
 
-	private boolean firstMessage = true;
-	private GameDescription gameDescription;
-	private Strategy strategy;
+    private boolean firstMessage = true;
+    private GameDescription gameDescription;
+    private Strategy strategy;
 
-	@Override
-	public void onOpen(Session session, EndpointConfig config) {
-		session.addMessageHandler(this);
-		this.session = session;
-	}
+    @Override
+    public void onOpen(Session session, EndpointConfig config) {
+        session.addMessageHandler(this);
+        this.session = session;
+    }
 
-	@Override
-	public void onMessage(String message) {
-		Gson gson = new Gson();
-		if (firstMessage) {
-			gameDescription = gson.fromJson(message, GameDescription.class);
-			for (Planet planet : gameDescription.getPlanets()) {
-				planet.setNeighbours(HardCodedGraph.getNeighbours().get(planet.getPlanetID()));
-			}
-			String graphIncludedMessage = gson.toJson(gameDescription);
-			strategy = StrategyFactory.getStrategy(gameDescription);
-			firstMessage = !firstMessage;
-			System.out.println(graphIncludedMessage);
-		} else {
-			GameState gameState = gson.fromJson(message, GameState.class);
-			Response response = strategy.getResponse(gameState);
-			if (response != null) {
-				String answer = gson.toJson(response);
-				System.err.println(answer);
-				sendMessage(answer);
-			}
 
-			System.out.println(message);
-			if (gameState.getGameStatus().equals("ENDED")) {
-				for (Standing standing: gameState.getStandings()) {
-					System.err.println(standing.toString());
-				}
-			}
-		}
-	}
+    @Override
+    public void onMessage(String message) {
+        Gson gson = new Gson();
+        if (firstMessage) {
+            gameDescription = gson.fromJson(message, GameDescription.class);
+            for (Planet planet : gameDescription.getPlanets()) {
+                planet.setNeighbours(HardCodedGraph.getNeighbours().get(planet.getPlanetID()));
+            }
+            String graphIncludedMessage = gson.toJson(gameDescription);
+            strategy = StrategyFactory.getStrategy(gameDescription);
+            firstMessage = !firstMessage;
+            System.out.println(graphIncludedMessage);
+        } else {
+            GameState gameState = gson.fromJson(message, GameState.class);
+            Response response = strategy.getResponse(gameState);
+            if (response != null) {
+                String answer = gson.toJson(response);
+                System.err.println(answer);
+                sendMessage(answer);
+            }
 
-	private synchronized void sendMessage(String message) {
-		session.getAsyncRemote().sendText(message);
-	}
+            System.out.println(message);
+            if (gameState.getGameStatus().equals("ENDED")) {
+                for (Standing standing : gameState.getStandings()) {
+                    System.err.println(standing.toString());
+                }
+            }
+        }
+    }
+
+    private synchronized void sendMessage(String message) {
+        session.getAsyncRemote().sendText(message);
+    }
 }

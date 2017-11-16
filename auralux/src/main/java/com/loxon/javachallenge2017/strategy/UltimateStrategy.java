@@ -36,9 +36,10 @@ public class UltimateStrategy extends Strategy {
     }
 
     private GameState getPastGameState() {
-
         if (gameStatesHistory.size() > past) {
-            return gameStatesHistory.getFirst();
+            GameState first = gameStatesHistory.getFirst();
+            gameStatesHistory.removeFirst();
+            return first;
         } else {
             return null;
         }
@@ -109,7 +110,6 @@ public class UltimateStrategy extends Strategy {
         if (gameState == null) {
             return null;
         }
-        gameStatesHistory.clear();
 
         magicNumbers = calculateMagicNumbers(gameState);
 
