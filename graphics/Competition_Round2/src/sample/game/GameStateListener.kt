@@ -8,8 +8,7 @@ import sample.backgame.renderable.RenderableMovingUnits
 import sample.backgame.renderable.RenderablePlanet
 import sample.backgame.renderable.StationaryUnits
 import sample.pack.descriptionclasses.GameDescription
-
-import sample.pack.magicnumber.MagicData
+import sample.pack.magic.MagicData
 import sample.pack.stateclasses.GameState
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -30,7 +29,7 @@ object GameStateListener : GameChangeListener {
 
     private fun updateGame(message: String) {
 
-        try {
+        synchronized(GameObjects) {
             if (first) {
                 first = false
 
@@ -95,7 +94,7 @@ object GameStateListener : GameChangeListener {
 
                             val mag = list.find { it.planetIndex == id }
 
-                            if(mag == null) {
+                            if (mag == null) {
                                 throw RuntimeException("Error with id: ${list.joinToString()}} and $id")
                             }
 
@@ -131,8 +130,6 @@ object GameStateListener : GameChangeListener {
                     }
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
@@ -147,7 +144,7 @@ object GameStateListener : GameChangeListener {
             magic = magicData
             return true
         } catch (e: Exception) {
-            // That's gonna happen a lot
+            // That's might happen a lot
         }
 
         return false
@@ -158,16 +155,18 @@ object GameStateListener : GameChangeListener {
 
         var proceeded = false
 
+        // If setting succeeds, do not update
+        if (trySetMagic(message)) {
+            return
+        }
+
         try {
             if (handlingMessage.getAndSet(true))
                 return
 
             proceeded = true
 
-            if (!trySetMagic(message))
-                updateGame(message)
-
-//            println("Thread id request: " + Thread.currentThread().id)
+            updateGame(message)
 
             Platform.runLater {
                 val context = GameVis.graphicsContext
@@ -179,8 +178,7 @@ object GameStateListener : GameChangeListener {
             }
 
         } finally {
-
-            if (proceeded)
+            if (proceeded){}
                 handlingMessage.set(false)
         }
     }

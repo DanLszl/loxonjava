@@ -8,11 +8,13 @@ interface Steppable<T> {
 enum class PlanetRenderState : Steppable<PlanetRenderState> {
     MagicVisible,
     OwnerVisible,
-    VisibleAll;
+    VisibleAll,
+    Dani;
 
     override val next: PlanetRenderState
         get() = when (this) {
-            MagicVisible -> VisibleAll
+            Dani -> VisibleAll
+            MagicVisible -> Dani
             OwnerVisible -> MagicVisible
             VisibleAll -> OwnerVisible
         }
