@@ -104,9 +104,9 @@ public class UltimateStrategy extends Strategy {
     }
 
     @Override
-    public Response getResponse(GameState gameState) {
-        saveGameState(gameState);
-        gameState = getPastGameState();
+    public Response getResponse(GameState inGameState) {
+        saveGameState(inGameState);
+        final GameState gameState = getPastGameState();
         if (gameState == null) {
             return null;
         }
@@ -139,6 +139,8 @@ public class UltimateStrategy extends Strategy {
         // és minden bolygóhoz tároljuk el, hogy a szomszédai milyen helyzetben vannak
 
         Map<Integer, Map<Integer, Double>> helpablePlanets = ourMovableArmies.entrySet().stream()
+                .filter(integerDoubleEntry -> GameStateInfo.getPlanetsAndOwnershipOfPlayer(gameState, ourPlayer)
+                        .get(integerDoubleEntry.getKey()) >= 1.0)
                 .collect(
                         Collectors.toMap(
                                 entry -> entry.getKey(),
