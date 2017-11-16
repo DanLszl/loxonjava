@@ -21,21 +21,22 @@ public class OccupyClosestEmptyOrClosestWithFullForces extends Strategy {
     }
 
     @Override
-    public List<Response> getResponse(GameState gameState) {
-        Player player = GameDescriptionInfo.getOurPlayer(gameDescription);
-        // Integer planetId = GameStateInfo.getBiggestEmptyOrWeakest(gameDescription, gameState, player);
-        // Integer planetId = GameStateInfo.getClosest(gameDescription, gameState, player);
-        Integer planetId = GameStateInfo.getClosestWeightedWithArmies(gameDescription, gameState, player);
-
-
-        List<PlanetState> stationedArmiesPlanets = GameStateInfo.getFullyOccupiedPlanetsWithStationedArmiesOfPlayer(gameState, player);
-        List<Response> responses = new ArrayList<>(stationedArmiesPlanets.size());
-        for (PlanetState planetState : stationedArmiesPlanets) {
-            StationedArmy stationedArmy = PlanetStateInfo.getStationedArmyOfPlayer(planetState, player);
-            if (stationedArmy != null) {
-                responses.add(new Response(planetState.getPlanetID(), planetId, (int) (stationedArmy.getSize()*multiplier)));
-            }
-        }
-        return responses;
+    public Response getResponse(GameState gameState) {
+//        Player player = GameDescriptionInfo.getOurPlayer(gameDescription);
+//        // Integer planetId = GameStateInfo.getBiggestEmptyOrWeakest(gameDescription, gameState, player);
+//        // Integer planetId = GameStateInfo.getClosest(gameDescription, gameState, player);
+//        Integer planetId = GameStateInfo.getClosestWeightedWithArmies(gameDescription, gameState, player);
+//
+//
+//        List<PlanetState> stationedArmiesPlanets = GameStateInfo.getFullyOccupiedPlanetsWithStationedArmiesOfPlayer(gameState, player);
+//        List<Response> responses = new ArrayList<>(stationedArmiesPlanets.size());
+//        for (PlanetState planetState : stationedArmiesPlanets) {
+//            StationedArmy stationedArmy = PlanetStateInfo.getStationedArmyOfPlayer(planetState, player);
+//            if (stationedArmy != null) {
+//                responses.add(new Response(planetState.getPlanetID(), planetId, (int) (stationedArmy.getSize()*multiplier)));
+//            }
+//        }
+//        return responses;
+        return null;
     }
 }

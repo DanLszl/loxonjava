@@ -13,6 +13,10 @@ public class MagicData {
     @Expose
     private List<MagicValue> magicValues = new LinkedList<>();
 
+    public MagicData(List<MagicValue> magicValues) {
+        this.magicValues = magicValues;
+    }
+
     public List<MagicValue> getMagicValues() {
         return magicValues;
     }

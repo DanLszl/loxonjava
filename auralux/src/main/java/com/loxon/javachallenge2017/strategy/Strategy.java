@@ -13,5 +13,5 @@ public abstract class Strategy {
         this.gameDescription = gameDescription;
     }
 
-    public abstract List<Response> getResponse(GameState gameState);
+    public abstract Response getResponse(GameState gameState);
 }

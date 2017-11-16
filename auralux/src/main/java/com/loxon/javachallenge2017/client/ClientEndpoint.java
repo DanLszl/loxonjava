@@ -44,16 +44,16 @@ public class ClientEndpoint extends Endpoint implements MessageHandler.Whole<Str
 			System.out.println(graphIncludedMessage);
 		} else {
 			GameState gameState = gson.fromJson(message, GameState.class);
-			List<Response> responses = strategy.getResponse(gameState);
-			for (Response response : responses) {
-				String answer = gson.toJson(response);
-				System.err.println(answer);
-				sendMessage(answer);
-			}
+			Response response = strategy.getResponse(gameState);
+
+			String answer = gson.toJson(response);
+			System.err.println(answer);
+			sendMessage(answer);
+
 			System.out.println(message);
 			if (gameState.getGameStatus().equals("ENDED")) {
 				for (Standing standing: gameState.getStandings()) {
-					System.err.printf(standing.toString());
+					System.err.println(standing.toString());
 				}
 			}
 
